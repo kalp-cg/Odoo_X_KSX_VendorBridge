@@ -146,7 +146,7 @@ graph TB
         F[☁️ Cloudinary<br/>File Storage]
     end
 
-    A -->|REST API (Axios)| B
+    A -->|REST API via Axios| B
     B -->|Prisma Client| D
     B -->|Upload API| F
 
