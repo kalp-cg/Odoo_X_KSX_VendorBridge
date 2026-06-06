@@ -91,9 +91,8 @@ export class QuotationsService {
     // Compute total
     const total = dto.lineItems.reduce((sum, li) => sum + li.unitPrice * li.quantity, 0);
 
-    const number = await this.numbering.next('Q');
-
     const q = await this.prisma.$transaction(async (tx) => {
+      const number = await this.numbering.next('Q', tx);
       const quotation = await tx.quotation.create({
         data: {
           rfqId: rfq.id,
