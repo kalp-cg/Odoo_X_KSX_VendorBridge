@@ -9,9 +9,6 @@
 </p>
 
 <p align="center">
-<a href="#-installation--setup">
-    <img src="https://img.shields.io/badge/▶️_Get_Started-FF4500?style=for-the-badge" alt="Get Started" />
-</a>
 <a href="#-full-documentation-index">
     <img src="https://img.shields.io/badge/📚_Read_Docs-3178C6?style=for-the-badge" alt="Read Docs" />
 </a>
