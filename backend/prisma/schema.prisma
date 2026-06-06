@@ -1,0 +1,736 @@
+// =========================================================================
+// VendorBridge — Prisma schema
+// See doc/02-architecture/07-DATA-MODEL.md for field-by-field contract.
+// =========================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "fullTextSearch"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [citext, pgcrypto]
+}
+
+// =========================================================================
+//  ENUMS
+// =========================================================================
+
+enum UserRole {
+  ADMIN
+  OFFICER
+  MANAGER
+  VENDOR
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum VendorStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum RfqStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  CANCELLED
+}
+
+enum RfqVendorStatus {
+  INVITED
+  RESPONDED
+  DECLINED
+}
+
+enum QuotationStatus {
+  SUBMITTED
+  SHORTLISTED
+  ACCEPTED
+  REJECTED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PoStatus {
+  GENERATED
+  SENT
+  DELIVERED
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+}
+
+enum NotificationType {
+  RFQ_PUBLISHED
+  RFQ_CLOSED
+  RFQ_CANCELLED
+  QUOTATION_SUBMITTED
+  QUOTATION_SHORTLISTED
+  QUOTATION_REJECTED
+  APPROVAL_REQUESTED
+  APPROVAL_APPROVED
+  APPROVAL_REJECTED
+  PO_GENERATED
+  PO_SENT
+  PO_DELIVERED
+  INVOICE_GENERATED
+  INVOICE_PAID
+  INVOICE_OVERDUE
+  VENDOR_STATUS_CHANGED
+  USER_INVITED
+  USER_SUSPENDED
+  PASSWORD_RESET
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+}
+
+enum FileOwnerType {
+  USER
+  VENDOR
+  RFQ
+  QUOTATION
+  PURCHASE_ORDER
+  INVOICE
+  APPROVAL
+}
+
+enum FileVisibility {
+  PRIVATE
+  INTERNAL
+  PUBLIC
+}
+
+enum AuditAction {
+  USER_SIGNUP
+  USER_LOGIN
+  USER_LOGIN_FAILED
+  USER_LOGOUT
+  USER_LOCKED
+  USER_INVITED
+  USER_ACTIVATED
+  USER_SUSPENDED
+  USER_DEACTIVATED
+  USER_ROLE_CHANGED
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_COMPLETED
+  VENDOR_CREATED
+  VENDOR_UPDATED
+  VENDOR_STATUS_CHANGED
+  VENDOR_DOCUMENT_UPLOADED
+  RFQ_CREATED
+  RFQ_UPDATED
+  RFQ_PUBLISHED
+  RFQ_CLOSED
+  RFQ_CANCELLED
+  RFQ_VENDOR_INVITED
+  QUOTATION_SUBMITTED
+  QUOTATION_UPDATED
+  QUOTATION_LOCKED
+  QUOTATION_SHORTLISTED
+  QUOTATION_REJECTED
+  APPROVAL_REQUESTED
+  APPROVAL_APPROVED
+  APPROVAL_REJECTED
+  PO_GENERATED
+  PO_SENT
+  PO_DELIVERED
+  INVOICE_GENERATED
+  INVOICE_PRINTED
+  INVOICE_EMAILED
+  INVOICE_PAID
+  INVOICE_OVERDUE
+  FILE_UPLOADED
+  FILE_DELETED
+  REPORT_EXPORTED
+  NOTIFICATION_DISPATCHED
+}
+
+enum AuditEntityType {
+  USER
+  VENDOR
+  RFQ
+  QUOTATION
+  APPROVAL
+  PURCHASE_ORDER
+  INVOICE
+  FILE
+  NOTIFICATION
+  REPORT
+  AUTH
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CHEQUE
+  CASH
+  UPI
+  CARD
+  OTHER
+}
+
+// =========================================================================
+//  IDENTITY
+// =========================================================================
+
+model User {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String     @unique @db.Citext
+  fullName        String     @db.VarChar(120)
+  phone           String?    @db.VarChar(32)
+  passwordHash    String     @db.VarChar(255)
+  role            UserRole
+  status          UserStatus @default(ACTIVE)
+  failedAttempts  Int        @default(0)
+  lockedUntil     DateTime?  @db.Timestamptz(6)
+  lastLoginAt     DateTime?  @db.Timestamptz(6)
+  emailVerifiedAt DateTime?  @db.Timestamptz(6)
+  // For VENDOR users only — link back to the company profile.
+  vendorCompanyId String?    @db.Uuid
+  vendorCompany   VendorCompany? @relation("VendorUsers", fields: [vendorCompanyId], references: [id], onDelete: SetNull)
+  createdAt       DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime   @updatedAt @db.Timestamptz(6)
+  createdById     String?    @db.Uuid
+
+  refreshTokens           RefreshToken[]
+  passwordResetTokens     PasswordResetToken[]
+  rfqsCreated             Rfq[]               @relation("RfqCreatedBy")
+  rfqLineItemsCreated     RfqLineItem[]
+  quotationsSubmitted     Quotation[]         @relation("QuotationSubmittedBy")
+  quotationLineItems      QuotationLineItem[]
+  approvalsRequested      Approval[]          @relation("ApprovalRequestedBy")
+  approvalsActed          Approval[]          @relation("ApprovalActedBy")
+  posCreated              PurchaseOrder[]     @relation("PoCreatedBy")
+  poEvents                PoStatusEvent[]
+  invoicesCreated         Invoice[]           @relation("InvoiceCreatedBy")
+  invoiceEvents           InvoiceStatusEvent[]
+  paymentsRecorded        Payment[]
+  notifications           Notification[]
+  files                   FileAsset[] @relation("FileAssetOwnerUser")
+  filesUploaded           FileAsset[] @relation("FileAssetUploader")
+  auditLogsActor          AuditLog[]          @relation("AuditActor")
+  vendorCompanyOwned      VendorCompany[]     @relation("VendorCompanyCreatedBy")
+
+  @@index([role, status])
+  @@index([vendorCompanyId])
+  @@map("users")
+}
+
+model RefreshToken {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash   String   @unique @db.VarChar(255) // sha256 of the random token string
+  // Chain of rotation; one refresh = one row, replaced-by points to the next row.
+  replacedById String? @db.Uuid
+  replacedBy   RefreshToken? @relation("RefreshRotation", fields: [replacedById], references: [id], onDelete: SetNull)
+  prevTokens  RefreshToken[] @relation("RefreshRotation")
+  userAgent   String?  @db.VarChar(255)
+  ipAddress   String?  @db.VarChar(64)
+  expiresAt   DateTime @db.Timestamptz(6)
+  revokedAt   DateTime? @db.Timestamptz(6)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique @db.VarChar(255)
+  expiresAt DateTime @db.Timestamptz(6)
+  usedAt    DateTime? @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("password_reset_tokens")
+}
+
+// =========================================================================
+//  VENDORS
+// =========================================================================
+
+model VendorCompany {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  legalName      String       @db.VarChar(200)
+  displayName    String       @db.VarChar(200)
+  gstNumber      String?      @unique @db.VarChar(32)
+  panNumber      String?      @db.VarChar(32)
+  registrationNo String?      @db.VarChar(64)
+  contactEmail   String       @db.Citext
+  contactPhone   String?      @db.VarChar(32)
+  addressLine1   String?      @db.VarChar(200)
+  addressLine2   String?      @db.VarChar(200)
+  city           String?      @db.VarChar(100)
+  state          String?      @db.VarChar(100)
+  postalCode     String?      @db.VarChar(20)
+  country        String?      @db.VarChar(100)
+  category       String?      @db.VarChar(100)
+  status         VendorStatus @default(PENDING_VERIFICATION)
+  rating         Decimal?     @db.Decimal(3, 2)
+  notes          String?      @db.Text
+  createdById    String?      @db.Uuid
+  createdBy      User?        @relation("VendorCompanyCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt      DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime     @updatedAt @db.Timestamptz(6)
+
+  users         User[]          @relation("VendorUsers")
+  rfqVendors    RfqVendor[]
+  quotations    Quotation[]
+  purchaseOrders PurchaseOrder[]
+  invoices       Invoice[]
+  files         FileAsset[]
+
+  @@index([status])
+  @@index([legalName])
+  @@index([category])
+  @@map("vendor_companies")
+}
+
+// =========================================================================
+//  RFQ
+// =========================================================================
+
+model Rfq {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  number          String    @unique @db.VarChar(32) // RFQ-YYYY-NNNN
+  title           String    @db.VarChar(200)
+  description     String?   @db.Text
+  status          RfqStatus @default(DRAFT)
+  deadline        DateTime  @db.Timestamptz(6)
+  publishedAt     DateTime? @db.Timestamptz(6)
+  closedAt        DateTime? @db.Timestamptz(6)
+  cancelledAt     DateTime? @db.Timestamptz(6)
+  cancelReason    String?   @db.Text
+  createdById     String    @db.Uuid
+  createdBy       User      @relation("RfqCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(6)
+
+  lineItems  RfqLineItem[]
+  vendors    RfqVendor[]
+  quotations Quotation[]
+  approvals  Approval[]
+  files      FileAsset[]
+
+  @@index([status])
+  @@index([deadline])
+  @@index([createdById])
+  @@map("rfqs")
+}
+
+model RfqLineItem {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rfqId           String   @db.Uuid
+  rfq             Rfq      @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  lineNo          Int
+  description     String   @db.VarChar(500)
+  quantity        Decimal  @db.Decimal(18, 4)
+  unit            String   @db.VarChar(32)
+  targetUnitPrice Decimal? @db.Decimal(18, 4)
+  notes           String?  @db.VarChar(500)
+  createdById     String   @db.Uuid
+  createdBy       User     @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  quotationLineItems QuotationLineItem[]
+
+  @@unique([rfqId, lineNo])
+  @@index([rfqId])
+  @@map("rfq_line_items")
+}
+
+model RfqVendor {
+  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rfqId        String          @db.Uuid
+  rfq          Rfq             @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  vendorId     String          @db.Uuid
+  vendor       VendorCompany   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  status       RfqVendorStatus @default(INVITED)
+  invitedAt    DateTime        @default(now()) @db.Timestamptz(6)
+  respondedAt  DateTime?       @db.Timestamptz(6)
+  declinedAt   DateTime?       @db.Timestamptz(6)
+  declineReason String?        @db.VarChar(500)
+
+  quotation Quotation?
+
+  @@unique([rfqId, vendorId])
+  @@index([rfqId])
+  @@index([vendorId])
+  @@map("rfq_vendors")
+}
+
+// =========================================================================
+//  QUOTATIONS
+// =========================================================================
+
+model Quotation {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rfqId           String          @db.Uuid
+  rfq             Rfq             @relation(fields: [rfqId], references: [id], onDelete: Restrict)
+  rfqVendorId     String          @unique @db.Uuid
+  rfqVendor       RfqVendor       @relation(fields: [rfqVendorId], references: [id], onDelete: Cascade)
+  vendorId        String          @db.Uuid
+  vendor          VendorCompany   @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  number          String          @unique @db.VarChar(32) // Q-YYYY-NNNN
+  status          QuotationStatus @default(SUBMITTED)
+  totalAmount     Decimal         @db.Decimal(18, 4) // computed at submit time
+  deliveryDate    DateTime?       @db.Timestamptz(6)
+  notes           String?         @db.Text
+  // Lock prevents edits after RFQ deadline OR once terminal state.
+  isLocked        Boolean         @default(false)
+  submittedAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime        @updatedAt @db.Timestamptz(6)
+  submittedById   String          @db.Uuid
+  submittedBy     User            @relation("QuotationSubmittedBy", fields: [submittedById], references: [id], onDelete: Restrict)
+
+  lineItems QuotationLineItem[]
+  approval  Approval?
+  files     FileAsset[]
+
+  @@index([rfqId, status])
+  @@index([vendorId])
+  @@index([status])
+  @@map("quotations")
+}
+
+model QuotationLineItem {
+  id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quotationId   String  @db.Uuid
+  quotation     Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  rfqLineItemId String  @db.Uuid
+  rfqLineItem   RfqLineItem @relation(fields: [rfqLineItemId], references: [id], onDelete: Restrict)
+  unitPrice     Decimal @db.Decimal(18, 4)
+  quantity      Decimal @db.Decimal(18, 4)
+  lineTotal     Decimal @db.Decimal(18, 4)
+  notes         String? @db.VarChar(500)
+  createdById   String  @db.Uuid
+  createdBy     User    @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([quotationId, rfqLineItemId])
+  @@index([quotationId])
+  @@map("quotation_line_items")
+}
+
+// =========================================================================
+//  APPROVALS
+// =========================================================================
+
+model Approval {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rfqId           String         @db.Uuid
+  rfq             Rfq            @relation(fields: [rfqId], references: [id], onDelete: Restrict)
+  quotationId     String         @unique @db.Uuid
+  quotation       Quotation      @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+  status          ApprovalStatus @default(PENDING)
+  remarks         String?        @db.Text
+  requestedById   String         @db.Uuid
+  requestedBy     User           @relation("ApprovalRequestedBy", fields: [requestedById], references: [id], onDelete: Restrict)
+  actedById       String?        @db.Uuid
+  actedBy         User?          @relation("ApprovalActedBy", fields: [actedById], references: [id], onDelete: SetNull)
+  requestedAt     DateTime       @default(now()) @db.Timestamptz(6)
+  decidedAt       DateTime?      @db.Timestamptz(6)
+  // Linkage to created artefacts (null until approved)
+  purchaseOrder   PurchaseOrder?
+  invoice         Invoice?
+
+  @@index([status])
+  @@index([rfqId])
+  @@index([requestedById])
+  @@index([actedById])
+  @@map("approvals")
+}
+
+// =========================================================================
+//  PURCHASE ORDERS
+// =========================================================================
+
+model PurchaseOrder {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  number          String    @unique @db.VarChar(32) // PO-YYYY-NNNN
+  approvalId      String    @unique @db.Uuid
+  approval        Approval  @relation(fields: [approvalId], references: [id], onDelete: Restrict)
+  vendorId        String    @db.Uuid
+  vendor          VendorCompany @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  quotationId     String    @db.Uuid
+  status          PoStatus  @default(GENERATED)
+  totalAmount     Decimal   @db.Decimal(18, 4)
+  taxRatePercent  Decimal   @default(0) @db.Decimal(5, 2)
+  taxAmount       Decimal   @default(0) @db.Decimal(18, 4)
+  grandTotal      Decimal   @db.Decimal(18, 4)
+  currency        String    @default("INR") @db.VarChar(8)
+  notes           String?   @db.Text
+  createdById     String    @db.Uuid
+  createdBy       User      @relation("PoCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  generatedAt     DateTime  @default(now()) @db.Timestamptz(6)
+  sentAt          DateTime? @db.Timestamptz(6)
+  deliveredAt     DateTime? @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(6)
+
+  lineItems  PoLineItem[]
+  statusEvents PoStatusEvent[]
+  invoice    Invoice?
+  files      FileAsset[]
+
+  @@index([status])
+  @@index([vendorId])
+  @@map("purchase_orders")
+}
+
+model PoLineItem {
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  purchaseOrderId String  @db.Uuid
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  lineNo          Int
+  description     String  @db.VarChar(500)
+  quantity        Decimal @db.Decimal(18, 4)
+  unit            String  @db.VarChar(32)
+  unitPrice       Decimal @db.Decimal(18, 4)
+  lineTotal       Decimal @db.Decimal(18, 4)
+  notes           String? @db.VarChar(500)
+
+  @@unique([purchaseOrderId, lineNo])
+  @@index([purchaseOrderId])
+  @@map("po_line_items")
+}
+
+model PoStatusEvent {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  purchaseOrderId String   @db.Uuid
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  fromStatus      PoStatus
+  toStatus        PoStatus
+  note            String?  @db.VarChar(500)
+  actorId         String   @db.Uuid
+  actor           User     @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  occurredAt      DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([purchaseOrderId])
+  @@map("po_status_events")
+}
+
+// =========================================================================
+//  INVOICES
+// =========================================================================
+
+model Invoice {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  number          String        @unique @db.VarChar(32) // INV-YYYY-NNNN
+  purchaseOrderId String        @unique @db.Uuid
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Restrict)
+  approvalId      String        @unique @db.Uuid
+  approval        Approval      @relation(fields: [approvalId], references: [id], onDelete: Restrict)
+  vendorId        String        @db.Uuid
+  vendor          VendorCompany @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  status          InvoiceStatus @default(PENDING)
+  subtotal        Decimal       @db.Decimal(18, 4)
+  taxRatePercent  Decimal       @db.Decimal(5, 2)
+  taxAmount       Decimal       @db.Decimal(18, 4)
+  grandTotal      Decimal       @db.Decimal(18, 4)
+  currency        String        @default("INR") @db.VarChar(8)
+  issueDate       DateTime      @default(now()) @db.Timestamptz(6)
+  dueDate         DateTime      @db.Timestamptz(6)
+  paidAt          DateTime?     @db.Timestamptz(6)
+  overdueAt       DateTime?     @db.Timestamptz(6)
+  notes           String?       @db.Text
+  createdById     String        @db.Uuid
+  createdBy       User          @relation("InvoiceCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt       DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(6)
+
+  lineItems    InvoiceLineItem[]
+  statusEvents InvoiceStatusEvent[]
+  payments     Payment[]
+  files        FileAsset[]
+
+  @@index([status])
+  @@index([vendorId])
+  @@index([dueDate])
+  @@map("invoices")
+}
+
+model InvoiceLineItem {
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoiceId    String  @db.Uuid
+  invoice      Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  lineNo       Int
+  description  String  @db.VarChar(500)
+  quantity     Decimal @db.Decimal(18, 4)
+  unitPrice    Decimal @db.Decimal(18, 4)
+  lineTotal    Decimal @db.Decimal(18, 4)
+  notes        String? @db.VarChar(500)
+
+  @@unique([invoiceId, lineNo])
+  @@index([invoiceId])
+  @@map("invoice_line_items")
+}
+
+model InvoiceStatusEvent {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoiceId   String        @db.Uuid
+  invoice     Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  fromStatus  InvoiceStatus
+  toStatus    InvoiceStatus
+  note        String?       @db.VarChar(500)
+  actorId     String        @db.Uuid
+  actor       User          @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  occurredAt  DateTime      @default(now()) @db.Timestamptz(6)
+
+  @@index([invoiceId])
+  @@map("invoice_status_events")
+}
+
+model Payment {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoiceId    String        @db.Uuid
+  invoice      Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  amount       Decimal       @db.Decimal(18, 4)
+  method       PaymentMethod
+  reference    String?       @db.VarChar(200)
+  paidAt       DateTime      @default(now()) @db.Timestamptz(6)
+  recordedById String        @db.Uuid
+  recordedBy   User          @relation(fields: [recordedById], references: [id], onDelete: Restrict)
+  notes        String?       @db.VarChar(500)
+
+  @@index([invoiceId])
+  @@map("payments")
+}
+
+// =========================================================================
+//  NOTIFICATIONS
+// =========================================================================
+
+model Notification {
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String             @db.Uuid
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  status      NotificationStatus @default(UNREAD)
+  title       String             @db.VarChar(200)
+  message     String             @db.Text
+  // Optional deep-link to the related entity
+  entityType  String?            @db.VarChar(64)
+  entityId    String?            @db.Uuid
+  // Optional payload (jsonb) — e.g. { rfqNumber, vendorName }
+  metadata    Json?              @db.JsonB
+  readAt      DateTime?          @db.Timestamptz(6)
+  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+// =========================================================================
+//  AUDIT LOGS (IMMUTABLE — see audit_immutability migration)
+// =========================================================================
+
+model AuditLog {
+  id          BigInt        @id @default(autoincrement())
+  occurredAt  DateTime      @default(now()) @db.Timestamptz(6)
+  actorId     String?       @db.Uuid
+  actor       User?         @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  actorEmail  String?       @db.VarChar(200)
+  action      AuditAction
+  entityType  AuditEntityType
+  entityId    String?       @db.Uuid
+  // Description for human reading
+  description String?       @db.VarChar(500)
+  // Free-form metadata snapshot (jsonb). For state transitions: { from, to, ... }
+  metadata    Json?         @db.JsonB
+  // Network / client context
+  ipAddress   String?       @db.VarChar(64)
+  userAgent   String?       @db.VarChar(500)
+  requestId   String?       @db.VarChar(64)
+
+  @@index([occurredAt])
+  @@index([actorId])
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([entityType, entityId, occurredAt])
+  @@map("audit_logs")
+}
+
+// =========================================================================
+//  FILE ASSETS
+// =========================================================================
+
+model FileAsset {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerType     FileOwnerType
+  ownerId       String?        @db.Uuid // nullable for ANONYMOUS
+  uploaderId    String         @db.Uuid
+  uploader      User           @relation("FileAssetUploader", fields: [uploaderId], references: [id], onDelete: Restrict)
+
+  // Polymorphic back-references
+  userId           String? @db.Uuid
+  vendorId         String? @db.Uuid
+  rfqId            String? @db.Uuid
+  quotationId      String? @db.Uuid
+  purchaseOrderId  String? @db.Uuid
+  invoiceId        String? @db.Uuid
+  user             User?           @relation("FileAssetOwnerUser", fields: [userId], references: [id], onDelete: SetNull)
+  vendor           VendorCompany?  @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  rfq              Rfq?            @relation(fields: [rfqId], references: [id], onDelete: SetNull)
+  quotation        Quotation?      @relation(fields: [quotationId], references: [id], onDelete: SetNull)
+  purchaseOrder    PurchaseOrder?  @relation(fields: [purchaseOrderId], references: [id], onDelete: SetNull)
+  invoice          Invoice?        @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  // Cloudinary metadata (source of truth per doc/03-platform/12-NOTIFICATIONS sibling rules)
+  provider        String   @default("cloudinary") @db.VarChar(32)
+  publicId        String   @db.VarChar(255)
+  url             String   @db.Text
+  secureUrl       String   @db.Text
+  format          String   @db.VarChar(16)
+  bytes           Int
+  originalName    String   @db.VarChar(255)
+  mimeType        String   @db.VarChar(120)
+  width           Int?
+  height          Int?
+  visibility      FileVisibility @default(PRIVATE)
+  checksum        String   @db.VarChar(128) // sha256
+  uploadedAt      DateTime @default(now()) @db.Timestamptz(6)
+  deletedAt       DateTime? @db.Timestamptz(6)
+
+  @@index([ownerType, ownerId])
+  @@index([uploaderId])
+  @@index([publicId])
+  @@map("file_assets")
+}
+
+// =========================================================================
+//  IDEMPOTENCY / SequenceTracker (one row per document type per year)
+// =========================================================================
+
+model SequenceTracker {
+  id         String   @id
+  year       Int
+  lastValue  Int      @default(0)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([id, year])
+  @@map("sequence_trackers")
+}
