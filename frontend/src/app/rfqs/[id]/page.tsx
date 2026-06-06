@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ArrowLeft, Send, XCircle, CheckCircle2, GitCompare, FileSpreadsheet, Clock, Calendar, User } from 'lucide-react';
@@ -10,11 +10,13 @@ import { resources } from '@/lib/resources';
 import { formatCurrency, formatDate, formatDateTime, fromNow } from '@/lib/utils';
 import { extractError } from '@/lib/api';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
+import { useAuthStore } from '@/lib/auth';
 import type { Quotation } from '@/lib/types';
 
-export default function RfqDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function RfqDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   useRequireAuth();
+  const user = useAuthStore((s) => s.user);
   const toast = useToast();
   const qc = useQueryClient();
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -60,16 +62,19 @@ export default function RfqDetailPage({ params }: { params: Promise<{ id: string
       actions={
         <div className="flex flex-wrap gap-2">
           <Link href="/rfqs" className="btn-secondary"><ArrowLeft className="h-4 w-4" />Back</Link>
-          {r.status === 'DRAFT' && (
+          {user?.role === 'VENDOR' && r.status === 'PUBLISHED' && !isClosed && qs.length === 0 && (
+            <Link href={`/quotations/new?rfqId=${r.id}`} className="btn-primary"><Send className="h-4 w-4 mr-2" />Submit Quotation</Link>
+          )}
+          {user?.role !== 'VENDOR' && r.status === 'DRAFT' && (
             <Button leftIcon={<Send className="h-4 w-4" />} loading={publish.isPending} onClick={() => publish.mutate()}>Publish</Button>
           )}
-          {r.status === 'PUBLISHED' && !isClosed && (
+          {user?.role !== 'VENDOR' && r.status === 'PUBLISHED' && !isClosed && (
             <>
-              <Link href={`/quotations/compare/${r.id}`} className="btn-secondary"><GitCompare className="h-4 w-4" />Compare</Link>
+              <Link href={`/quotations/compare/${r.id}`} className="btn-secondary"><GitCompare className="h-4 w-4 mr-2" />Compare</Link>
               <Button variant="secondary" leftIcon={<CheckCircle2 className="h-4 w-4" />} loading={close.isPending} onClick={() => close.mutate()}>Close</Button>
             </>
           )}
-          {r.status === 'PUBLISHED' && (
+          {user?.role !== 'VENDOR' && r.status === 'PUBLISHED' && (
             <Button variant="danger" leftIcon={<XCircle className="h-4 w-4" />} onClick={() => setCancelOpen(true)}>Cancel</Button>
           )}
         </div>
@@ -82,7 +87,7 @@ export default function RfqDetailPage({ params }: { params: Promise<{ id: string
             <Stat label="Status" value={<StatusPill status={r.status} />} />
             <Stat label="Deadline" value={formatDateTime(r.deadline)} icon={<Calendar className="h-3.5 w-3.5" />} />
             <Stat label="Published" value={r.publishedAt ? formatDateTime(r.publishedAt) : '—'} icon={<Clock className="h-3.5 w-3.5" />} />
-            <Stat label="Created by" value={r.createdByName ?? r.createdById} icon={<User className="h-3.5 w-3.5" />} />
+            <Stat label="Created by" value={(r as any).createdBy?.fullName ?? r.createdByName ?? r.createdById} icon={<User className="h-3.5 w-3.5" />} />
             <Stat label="Created" value={fromNow(r.createdAt)} />
             <Stat label="Quotations" value={qs.length} />
           </div>
@@ -98,9 +103,9 @@ export default function RfqDetailPage({ params }: { params: Promise<{ id: string
           <CardHeader title="Invited Vendors" />
           {r.vendors && r.vendors.length > 0 ? (
             <ul className="space-y-2 text-sm">
-              {r.vendors.map((v) => (
+              {r.vendors.map((v: any) => (
                 <li key={v.id} className="flex justify-between gap-2">
-                  <span className="text-ink-800 truncate">{v.vendorName ?? v.vendorId}</span>
+                  <span className="text-ink-800 truncate">{v.vendor?.displayName ?? v.vendorName ?? v.vendorId}</span>
                   <StatusPill status={v.status} />
                 </li>
               ))}
@@ -155,10 +160,10 @@ export default function RfqDetailPage({ params }: { params: Promise<{ id: string
               </TR>
             </THead>
             <TBody>
-              {qs.map((q) => (
+              {qs.map((q: any) => (
                 <TR key={q.id}>
                   <TD className="font-mono text-xs"><Link href={`/quotations/${q.id}`} className="text-brand-700">{q.number}</Link></TD>
-                  <TD>{q.vendorName ?? q.vendorId}</TD>
+                  <TD>{q.vendor?.displayName ?? q.vendorName ?? q.vendorId}</TD>
                   <TD><StatusPill status={q.status} /></TD>
                   <TD className="text-right">{formatCurrency(Number(q.totalAmount))}</TD>
                   <TD className="text-xs text-ink-500">{fromNow(q.submittedAt)}</TD>
