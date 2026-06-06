@@ -93,11 +93,11 @@ export class ApprovalsService {
       throw forbidden('You cannot approve an approval you requested (segregation of duties)');
     }
 
-    const poNumber = await this.numbering.next('PO');
-    const invNumber = await this.numbering.next('INV');
     const taxRate = 18; // single tax rate per invoice (default 18%)
 
     const result = await this.prisma.$transaction(async (tx) => {
+      const poNumber = await this.numbering.next('PO', tx);
+      const invNumber = await this.numbering.next('INV', tx);
       // Mark approval as APPROVED
       const a = await tx.approval.update({
         where: { id: approval.id },
