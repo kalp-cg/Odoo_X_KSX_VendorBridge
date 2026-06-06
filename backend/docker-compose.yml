@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vendorbridge_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vendorbridge
+      POSTGRES_USER: vb_owner
+      POSTGRES_PASSWORD: vb_owner_pwd
+    ports:
+      - '5432:5432'
+    volumes:
+      - vb_pgdata:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vb_owner -d vendorbridge']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  vb_pgdata:
