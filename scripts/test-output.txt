@@ -1,0 +1,114 @@
+﻿
+=== VendorBridge BE Test Suite :: run MQ23W09S ===
+Base: http://localhost:4000/api/v1
+Time: 2026-06-06T08:43:35.394Z
+
+
+== 1. AUTH ==
+  Γ£ô BE-AUTH-01  status=201 role=ADMIN
+  Γ£ô BE-AUTH-02  status=201
+  Γ£ô BE-AUTH-03  status=201
+  Γ£ô BE-AUTH-04  role=VENDOR vendorCompanyId=57e6aeca-3532-43f6-8367-d7e3893dd401
+  Γ£ô BE-AUTH-05  status=403
+  Γ£ô BE-AUTH-06  status=401 code=UNAUTHENTICATED
+  Γ£ô BE-AUTH-07  status=400
+  Γ£ô BE-AUTH-08  status=400
+  Γ£ô BE-AUTH-09  status=400
+  Γ£ô BE-AUTH-10  status=400
+  Γ£ô BE-AUTH-11  status=401
+  Γ£ô BE-AUTH-12  status=201
+  Γ£ô BE-AUTH-13  status=201
+  Γ£ô BE-AUTH-14  status=400
+  Γ£ù BE-AUTH-15  status=403 role=undefined
+  Γ£ô BE-AUTH-16  status=409 code=CONFLICT
+  Γ£ô BE-AUTH-17  status=400
+  Γ£ô BE-AUTH-18  status=200 email=admin@vendorbridge.local
+  Γ£ô BE-AUTH-19  status=401
+  Γ£ô BE-AUTH-20  status=401
+  Γ£ô BE-AUTH-21  status=201
+  Γ£ô BE-AUTH-22  logout 200/201
+  Γ£ô BE-AUTH-23  status=401
+  Γ£ô BE-AUTH-24  status=400
+
+== 2. DASHBOARD / REPORTS ==
+  Γ£ô BE-DASH-01  status=200 vendors=12 openRfq=2 openPo=1
+  Γ£ô BE-DASH-02  status=200 counts=true
+  Γ£ô BE-DASH-03  len=5
+  Γ£ô BE-DASH-04  status=401
+  Γ£ô BE-DASH-05  status=200 count=4
+  Γ£ô BE-DASH-06  count=5 sorted=true
+  Γ£ô BE-DASH-07  status=200 count=5
+
+== 3. VENDORS ==
+  Γ£ù BE-VEN-01   status=200 total=12
+  Γ£ô BE-VEN-02   status=403
+  Γ£ô BE-VEN-03   status=200
+  Γ£ô BE-VEN-04   count=7 allActive=true
+  Γ£ô BE-VEN-05   count=1
+  Γ£ù BE-VEN-06   no gstin to search
+  Γ£ù BE-VEN-07   total=12 hasNext=true
+  Γ£ô BE-VEN-08   status=200
+  Γ£ô BE-VEN-09   status=201 status=PENDING_VERIFICATION
+  Γ£ô BE-VEN-10   status=403
+  Γ£ô BE-VEN-11   status=400
+  Γ£ù BE-VEN-12   status=201
+  Γ£ô BE-VEN-13   status=200
+  Γ£ù BE-VEN-14   status=201 -> ACTIVE
+  Γ£ù BE-VEN-15   status=201 -> BLOCKED
+  Γ£ù BE-VEN-16   status=201 -> INACTIVE
+  Γ£ù BE-VEN-17   status=422
+  Γ£ô BE-VEN-18   status=200
+  Γ£ô BE-VEN-19   status=403
+  Γ£ù BE-VEN-20   status=403
+
+== 4. RFQ ==
+  Γ£ù BE-RFQ-01   status=500 num=undefined state=undefined
+  Γ£ô BE-RFQ-02   status=403
+  Γ£ô BE-RFQ-03   status=400
+  Γ£ô BE-RFQ-04   status=400
+  Γ£ô BE-RFQ-05   status=400
+  Γ£ô BE-RFQ-06   status=400
+  Γ£ô BE-RFQ-07   status=400
+  Γ£ù BE-RFQ-08   precondition missing
+  Γ£ù BE-RFQ-09   precondition missing
+  Γ£ù BE-RFQ-10   precondition missing
+  Γ£ù BE-RFQ-11   precondition missing
+  Γ£ù BE-RFQ-12   precondition missing
+  Γ£ù BE-RFQ-13   precondition missing
+  Γ£ù BE-RFQ-14   precondition missing
+  Γ£ô BE-RFQ-15   total=17
+  Γ£ô BE-RFQ-16   count=2 allPub=true
+  Γ£ô BE-RFQ-17   count=5 (should be < 20)
+  Γ£ù BE-RFQ-18   precondition missing
+  ~ BE-RFQ-19   Cloudinary file upload ΓÇö out of scope for automated BE suite (network/creds)
+  Γ£ù BE-RFQ-19   File attachment (RFQ)
+
+== 5. QUOTATIONS ==
+  ! Could not publish quote-test RFQ: 400 {
+  error: {
+    code: 'VALIDATION_ERROR',
+    message: 'Path parameter must be a valid UUID',
+    details: { value: 'undefined' }
+  },
+  path: '/api/v1/rfqs/undefined/publish',
+  method: 'POST',
+  timestamp: '2026-06-06T08:43:36.769Z',
+  requestId: '00a908ad-57ac-438f-9b59-7f443cbe9e76'
+}
+node : 
+At line:1 char:43
++ ... \Projects\OdooxKSV_virtuall\scripts; node test-suite.mjs 2>&1 | Tee-O ...
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+!! Suite aborted: Cannot read properties of undefined (reading 'lineItems')
+
+=== Summary ===
+PASS: 0
+FAIL: 0
+SKIP: 1
+TOTAL: 71
+
+Report written: K:\Projects\OdooxKSV_virtuall\scripts\test-report.json
+

@@ -1,0 +1,300 @@
+{
+  "runId": "MQ23W09S",
+  "runAt": "2026-06-06T08:43:36.773Z",
+  "base": "http://localhost:4000/api/v1",
+  "summary": {
+    "pass": 0,
+    "fail": 0,
+    "skip": 1,
+    "total": 71
+  },
+  "results": [
+    {
+      "id": "BE-AUTH-01",
+      "status": 201,
+      "note": "status=201 role=ADMIN",
+      "response": "{\"data\":{\"user\":{\"id\":\"21fde8f0-a468-4d2f-ad7d-cb5ebde84ceb\",\"email\":\"admin@vendorbridge.local\",\"fullName\":\"System Admin"
+    },
+    {
+      "id": "BE-AUTH-02",
+      "note": "status=201"
+    },
+    {
+      "id": "BE-AUTH-03",
+      "note": "status=201"
+    },
+    {
+      "id": "BE-AUTH-04",
+      "note": "role=VENDOR vendorCompanyId=57e6aeca-3532-43f6-8367-d7e3893dd401"
+    },
+    {
+      "id": "BE-AUTH-05",
+      "note": "status=403"
+    },
+    {
+      "id": "BE-AUTH-06",
+      "note": "status=401 code=UNAUTHENTICATED"
+    },
+    {
+      "id": "BE-AUTH-07",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-AUTH-08",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-AUTH-09",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-AUTH-10",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-AUTH-11",
+      "note": "status=401"
+    },
+    {
+      "id": "BE-AUTH-12",
+      "note": "status=201"
+    },
+    {
+      "id": "BE-AUTH-13",
+      "note": "status=201"
+    },
+    {
+      "id": "BE-AUTH-14",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-AUTH-15",
+      "note": "status=403 role=undefined"
+    },
+    {
+      "id": "BE-AUTH-16",
+      "note": "status=409 code=CONFLICT"
+    },
+    {
+      "id": "BE-AUTH-17",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-AUTH-18",
+      "note": "status=200 email=admin@vendorbridge.local"
+    },
+    {
+      "id": "BE-AUTH-19",
+      "note": "status=401"
+    },
+    {
+      "id": "BE-AUTH-20",
+      "note": "status=401"
+    },
+    {
+      "id": "BE-AUTH-21",
+      "note": "status=201"
+    },
+    {
+      "id": "BE-AUTH-22",
+      "note": "logout 200/201"
+    },
+    {
+      "id": "BE-AUTH-23",
+      "note": "status=401"
+    },
+    {
+      "id": "BE-AUTH-24",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-DASH-01",
+      "note": "status=200 vendors=12 openRfq=2 openPo=1"
+    },
+    {
+      "id": "BE-DASH-02",
+      "note": "status=200 counts=true"
+    },
+    {
+      "id": "BE-DASH-03",
+      "note": "len=5"
+    },
+    {
+      "id": "BE-DASH-04",
+      "note": "status=401"
+    },
+    {
+      "id": "BE-DASH-05",
+      "note": "status=200 count=4"
+    },
+    {
+      "id": "BE-DASH-06",
+      "note": "count=5 sorted=true"
+    },
+    {
+      "id": "BE-DASH-07",
+      "note": "status=200 count=5"
+    },
+    {
+      "id": "BE-VEN-01",
+      "note": "status=200 total=12"
+    },
+    {
+      "id": "BE-VEN-02",
+      "note": "status=403"
+    },
+    {
+      "id": "BE-VEN-03",
+      "note": "status=200"
+    },
+    {
+      "id": "BE-VEN-04",
+      "note": "count=7 allActive=true"
+    },
+    {
+      "id": "BE-VEN-05",
+      "note": "count=1"
+    },
+    {
+      "id": "BE-VEN-06",
+      "note": "no gstin to search"
+    },
+    {
+      "id": "BE-VEN-07",
+      "note": "total=12 hasNext=true"
+    },
+    {
+      "id": "BE-VEN-08",
+      "note": "status=200"
+    },
+    {
+      "id": "BE-VEN-09",
+      "note": "status=201 status=PENDING_VERIFICATION"
+    },
+    {
+      "id": "BE-VEN-10",
+      "note": "status=403"
+    },
+    {
+      "id": "BE-VEN-11",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-VEN-12",
+      "note": "status=201"
+    },
+    {
+      "id": "BE-VEN-13",
+      "note": "status=200"
+    },
+    {
+      "id": "BE-VEN-14",
+      "note": "status=201 -> ACTIVE"
+    },
+    {
+      "id": "BE-VEN-15",
+      "note": "status=201 -> BLOCKED"
+    },
+    {
+      "id": "BE-VEN-16",
+      "note": "status=201 -> INACTIVE"
+    },
+    {
+      "id": "BE-VEN-17",
+      "note": "status=422"
+    },
+    {
+      "id": "BE-VEN-18",
+      "note": "status=200"
+    },
+    {
+      "id": "BE-VEN-19",
+      "note": "status=403"
+    },
+    {
+      "id": "BE-VEN-20",
+      "note": "status=403"
+    },
+    {
+      "id": "BE-RFQ-01",
+      "note": "status=500 num=undefined state=undefined"
+    },
+    {
+      "id": "BE-RFQ-02",
+      "note": "status=403"
+    },
+    {
+      "id": "BE-RFQ-03",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-RFQ-04",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-RFQ-05",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-RFQ-06",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-RFQ-07",
+      "note": "status=400"
+    },
+    {
+      "id": "BE-RFQ-08",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-09",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-10",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-11",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-12",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-13",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-14",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-15",
+      "note": "total=17"
+    },
+    {
+      "id": "BE-RFQ-16",
+      "note": "count=2 allPub=true"
+    },
+    {
+      "id": "BE-RFQ-17",
+      "note": "count=5 (should be < 20)"
+    },
+    {
+      "id": "BE-RFQ-18",
+      "note": "precondition missing"
+    },
+    {
+      "id": "BE-RFQ-19",
+      "status": "SKIP",
+      "note": "Cloudinary file upload — out of scope for automated BE suite (network/creds)"
+    },
+    {
+      "id": "BE-RFQ-19",
+      "note": "File attachment (RFQ)"
+    }
+  ]
+}
