@@ -1,0 +1,2 @@
+# Place RS256 keys here. Generated via `pnpm keygen` (or `npm run keygen`).
+# These files are gitignored.
