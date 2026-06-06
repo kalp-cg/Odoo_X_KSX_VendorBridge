@@ -187,6 +187,7 @@ export class RfqService {
         take,
         include: {
           _count: { select: { vendors: true, quotations: true, lineItems: true } },
+          createdBy: { select: { id: true, fullName: true } },
         },
       }),
       this.prisma.rfq.count({ where }),
