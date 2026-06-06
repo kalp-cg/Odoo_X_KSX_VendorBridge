@@ -10,6 +10,7 @@ import { resources } from '@/lib/resources';
 import type { RfqStatus } from '@/lib/types';
 import { fromNow, formatDate, formatCurrency } from '@/lib/utils';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
+import { useAuthStore } from '@/lib/auth';
 
 const STATUS_TABS: { key: 'ALL' | RfqStatus; label: string }[] = [
   { key: 'ALL', label: 'All' },
@@ -21,6 +22,7 @@ const STATUS_TABS: { key: 'ALL' | RfqStatus; label: string }[] = [
 
 export default function RfqsPage() {
   useRequireAuth();
+  const user = useAuthStore((s) => s.user);
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState<'ALL' | RfqStatus>('ALL');
   const [search, setSearch] = useState('');
@@ -41,9 +43,11 @@ export default function RfqsPage() {
       title="RFQs"
       subtitle="Request for Quotations"
       actions={
-        <Link href="/rfqs/new" className="btn-primary">
-          <Plus className="h-4 w-4" />New RFQ
-        </Link>
+        user?.role !== 'VENDOR' ? (
+          <Link href="/rfqs/new" className="btn-primary">
+            <Plus className="h-4 w-4" />New RFQ
+          </Link>
+        ) : null
       }
     >
       <Card>
@@ -74,18 +78,18 @@ export default function RfqsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data!.data.map((r) => (
+                {data!.data.map((r: any) => (
                   <TR key={r.id}>
                     <TD className="font-mono text-xs">
                       <Link href={`/rfqs/${r.id}`} className="text-brand-700">{r.number}</Link>
                     </TD>
                     <TD>
                       <Link href={`/rfqs/${r.id}`} className="font-medium text-ink-800 hover:text-brand-700 block truncate max-w-md">{r.title}</Link>
-                      <div className="text-xs text-ink-500 mt-0.5">by {r.createdByName ?? r.createdById}</div>
+                      <div className="text-xs text-ink-500 mt-0.5">by {r.createdBy?.fullName ?? r.createdByName ?? r.createdById}</div>
                     </TD>
                     <TD><StatusPill status={r.status} /></TD>
                     <TD className="text-xs">{formatDate(r.deadline)}</TD>
-                    <TD className="text-xs">{r.quotationCount ?? 0}</TD>
+                    <TD className="text-xs">{r._count?.quotations ?? r.quotationCount ?? 0}</TD>
                     <TD className="text-xs text-ink-500">{fromNow(r.createdAt)}</TD>
                   </TR>
                 ))}
