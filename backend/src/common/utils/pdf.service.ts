@@ -144,24 +144,34 @@ export class PdfService {
   private renderLineItems(doc: PDFKit.PDFDocument, items: LineItemShape[], currency: string) {
     const startY = doc.y;
     const cols = [
-      { label: '#', x: 50, w: 25 },
-      { label: 'Description', x: 80, w: 280 },
-      { label: 'Qty', x: 365, w: 50, align: 'right' as const },
-      { label: 'Unit Price', x: 420, w: 60, align: 'right' as const },
-      { label: 'Total', x: 485, w: 60, align: 'right' as const },
+      { label: '#', x: 50, w: 20 },
+      { label: 'Description', x: 70, w: 220 },
+      { label: 'Qty', x: 290, w: 50, align: 'right' as const },
+      { label: 'Unit Price', x: 340, w: 100, align: 'right' as const },
+      { label: 'Total', x: 440, w: 105, align: 'right' as const },
     ];
     doc.fontSize(10).fillColor('#000');
     cols.forEach((c) => doc.text(c.label, c.x, startY, { width: c.w, align: c.align ?? 'left' }));
     doc.moveTo(50, startY + 14).lineTo(545, startY + 14).strokeColor('#999').stroke();
-    let y = startY + 18;
+    let y = startY + 22;
     doc.fillColor('#222');
     for (const li of items) {
-      doc.text(String(li.lineNo), 50, y, { width: cols[0].w });
-      doc.text(li.description, 80, y, { width: cols[1].w });
-      doc.text(fmt(li.quantity), 365, y, { width: cols[2].w, align: 'right' });
-      doc.text(`${currency} ${fmt(li.unitPrice)}`, 420, y, { width: cols[3].w, align: 'right' });
-      doc.text(`${currency} ${fmt(li.lineTotal)}`, 485, y, { width: cols[4].w, align: 'right' });
-      y += 18;
+      const descText = String(li.description || '');
+      const hDesc = doc.heightOfString(descText, { width: cols[1].w });
+      const rowHeight = Math.max(hDesc, 14) + 8;
+      
+      // Check for page break
+      if (y + rowHeight > doc.page.height - 70) {
+        doc.addPage();
+        y = 50;
+      }
+
+      doc.text(String(li.lineNo), cols[0].x, y, { width: cols[0].w });
+      doc.text(descText, cols[1].x, y, { width: cols[1].w });
+      doc.text(fmt(li.quantity), cols[2].x, y, { width: cols[2].w, align: 'right' });
+      doc.text(`${currency} ${fmt(li.unitPrice)}`, cols[3].x, y, { width: cols[3].w, align: 'right' });
+      doc.text(`${currency} ${fmt(li.lineTotal)}`, cols[4].x, y, { width: cols[4].w, align: 'right' });
+      y += rowHeight;
     }
     doc.moveTo(50, y).lineTo(545, y).strokeColor('#ccc').stroke();
     doc.y = y + 8;
@@ -169,12 +179,12 @@ export class PdfService {
 
   private renderTotals(doc: PDFKit.PDFDocument, rows: [string, string][]) {
     const startY = doc.y;
-    const labelX = 380;
-    const valueX = 485;
+    const labelX = 330;
+    const valueX = 440;
     rows.forEach(([k, v], i) => {
       const y = startY + i * 16;
       doc.fontSize(10).fillColor('#000').text(k, labelX, y, { width: 100, align: 'right' });
-      doc.fontSize(i === rows.length - 1 ? 12 : 10).fillColor('#000').text(v, valueX, y, { width: 60, align: 'right' });
+      doc.fontSize(i === rows.length - 1 ? 12 : 10).fillColor('#000').text(v, valueX, y, { width: 105, align: 'right' });
     });
     doc.y = startY + rows.length * 16 + 10;
   }
