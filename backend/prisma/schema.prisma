@@ -726,11 +726,11 @@ model FileAsset {
 // =========================================================================
 
 model SequenceTracker {
-  id         String   @id
+  id         String
   year       Int
   lastValue  Int      @default(0)
   updatedAt  DateTime @updatedAt @db.Timestamptz(6)
 
-  @@unique([id, year])
+  @@id([id, year])
   @@map("sequence_trackers")
 }
