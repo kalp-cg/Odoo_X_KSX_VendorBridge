@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ArrowLeft, GitCompare, CheckCircle2, XCircle } from 'lucide-react';
@@ -12,8 +12,8 @@ import { extractError } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 
-export default function CompareQuotationsPage({ params }: { params: Promise<{ rfqId: string }> }) {
-  const { rfqId } = use(params);
+export default function CompareQuotationsPage({ params }: { params: { rfqId: string } }) {
+  const { rfqId } = params;
   useRequireAuth();
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
@@ -43,7 +43,7 @@ export default function CompareQuotationsPage({ params }: { params: Promise<{ rf
   });
 
   if (isLoading || !data?.data || !rfq?.data) return <AppShell title="Compare"><Spinner /></AppShell>;
-  const qs = data.data;
+  const qs: any[] = (data.data as any).quotations || [];
   const lineItems = rfq.data.lineItems ?? [];
   const isOfficerOrAdmin = user?.role === 'ADMIN' || user?.role === 'OFFICER';
 
@@ -82,7 +82,7 @@ export default function CompareQuotationsPage({ params }: { params: Promise<{ rf
                   {qs.map((q) => (
                     <th key={q.id} className="text-left font-medium py-2 px-2 min-w-[180px]">
                       <div className="space-y-1">
-                        <div className="text-sm normal-case text-ink-800 font-semibold">{q.vendorName}</div>
+                        <div className="text-sm normal-case text-ink-800 font-semibold">{(q as any).vendor?.displayName ?? q.vendorName}</div>
                         <div className="text-[10px] text-ink-500 font-mono">{q.number}</div>
                         <StatusPill status={q.status} />
                       </div>
