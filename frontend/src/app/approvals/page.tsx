@@ -70,15 +70,15 @@ export default function ApprovalsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data?.data?.map((a) => (
+                {data?.data?.map((a: any) => (
                   <TR key={a.id}>
-                    <TD className="text-xs">{a.rfqNumber ?? a.rfqId}</TD>
+                    <TD className="text-xs">{a.rfq?.number ?? a.rfqNumber ?? a.rfqId}</TD>
                     <TD className="font-mono text-xs">
-                      <Link href={`/quotations/${a.quotationId}`} className="text-brand-700">{a.quotationNumber ?? a.quotationId}</Link>
+                      <Link href={`/quotations/${a.quotationId}`} className="text-brand-700">{a.quotation?.number ?? a.quotationNumber ?? a.quotationId}</Link>
                     </TD>
-                    <TD>{a.requestedByName ?? a.requestedById}</TD>
+                    <TD>{a.requestedBy?.fullName ?? a.requestedByName ?? a.requestedById}</TD>
                     <TD><StatusPill status={a.status} /></TD>
-                    <TD className="text-right">{a.quotationTotal ? formatCurrency(Number(a.quotationTotal)) : '—'}</TD>
+                    <TD className="text-right">{a.quotation?.totalAmount ? formatCurrency(Number(a.quotation.totalAmount)) : a.quotationTotal ? formatCurrency(Number(a.quotationTotal)) : '—'}</TD>
                     <TD className="text-xs text-ink-500">{fromNow(a.requestedAt)}</TD>
                     <TD className="text-right">
                       {a.status === 'PENDING' && (

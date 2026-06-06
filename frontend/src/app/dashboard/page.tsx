@@ -130,14 +130,14 @@ function AdminOfficerDashboard() {
         <Card>
           <CardHeader title="Recent Invoices" action={<Link href="/invoices" className="text-xs">View all</Link>} />
           <ul className="space-y-3">
-            {r.invoices.slice(0, 6).map((i) => (
+            {r.invoices.slice(0, 6).map((i: any) => (
               <li key={i.id} className="flex items-start justify-between gap-3 text-sm">
                 <div className="min-w-0">
                   <Link href={`/invoices/${i.id}`} className="font-medium text-ink-800 hover:text-brand-700 block truncate">
                     {i.number}
                   </Link>
                   <div className="text-xs text-ink-500 mt-0.5">
-                    {i.vendorName} · {fromNow(i.createdAt)}
+                    {i.vendor?.displayName ?? i.vendorName ?? '—'} · {fromNow(i.createdAt)}
                   </div>
                 </div>
                 <StatusPill status={i.status} />
@@ -162,12 +162,12 @@ function AdminOfficerDashboard() {
               </tr>
             </thead>
             <tbody>
-              {r.purchaseOrders.slice(0, 6).map((p) => (
+              {r.purchaseOrders.slice(0, 6).map((p: any) => (
                 <tr key={p.id} className="border-b border-ink-100 last:border-0">
                   <td className="px-2 py-2.5 font-medium">
                     <Link href={`/purchase-orders/${p.id}`} className="text-brand-700">{p.number}</Link>
                   </td>
-                  <td className="px-2 py-2.5">{p.vendorName ?? '—'}</td>
+                  <td className="px-2 py-2.5">{p.vendor?.displayName ?? p.vendorName ?? '—'}</td>
                   <td className="px-2 py-2.5"><StatusPill status={p.status} /></td>
                   <td className="px-2 py-2.5 text-right">{formatCurrency(Number(p.grandTotal))}</td>
                   <td className="px-2 py-2.5 text-ink-500">{fromNow(p.generatedAt)}</td>
@@ -225,14 +225,14 @@ function VendorDashboard() {
       <Card>
         <CardHeader title="My Quotations" action={<Link href="/quotations" className="text-xs">View all</Link>} />
         <ul className="divide-y divide-ink-100">
-          {quotations?.data?.map((q) => (
+          {quotations?.data?.map((q: any) => (
             <li key={q.id} className="py-3 flex justify-between gap-3">
               <div className="min-w-0">
                 <Link href={`/quotations/${q.id}`} className="font-medium text-ink-800 hover:text-brand-700 block truncate">
                   {q.number}
                 </Link>
                 <div className="text-xs text-ink-500 mt-0.5">
-                  {q.rfqNumber} · {formatCurrency(Number(q.totalAmount))}
+                  {q.rfq?.number ?? q.rfqNumber ?? ''} · {formatCurrency(Number(q.totalAmount))}
                 </div>
               </div>
               <StatusPill status={q.status} />
