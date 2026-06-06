@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle2, XCircle, Lock, FileText } from 'lucide-react';
@@ -12,8 +12,8 @@ import { extractError } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 
-export default function QuotationDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function QuotationDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   useRequireAuth();
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
@@ -45,7 +45,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
   return (
     <AppShell
       title={`${q.number}`}
-      subtitle={q.rfqNumber ? `For ${q.rfqNumber}` : undefined}
+      subtitle={(q as any).rfq?.number ? `For ${(q as any).rfq.number}` : q.rfqNumber ? `For ${q.rfqNumber}` : undefined}
       actions={
         <div className="flex gap-2">
           <Link href="/quotations" className="btn-secondary"><ArrowLeft className="h-4 w-4" />Back</Link>
@@ -66,7 +66,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
           <CardHeader title="Overview" icon={<FileText className="h-4 w-4" />} />
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
             <Stat label="Status" value={<StatusPill status={q.status} />} />
-            <Stat label="Vendor" value={q.vendorName ?? q.vendorId} />
+            <Stat label="Vendor" value={(q as any).vendor?.displayName ?? q.vendorName ?? q.vendorId} />
             <Stat label="Submitted" value={fromNow(q.submittedAt)} />
             <Stat label="Delivery Date" value={q.deliveryDate ? formatDate(q.deliveryDate) : '—'} />
             <Stat label="Total" value={formatCurrency(Number(q.totalAmount))} />

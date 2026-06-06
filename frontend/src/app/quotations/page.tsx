@@ -63,11 +63,11 @@ export default function QuotationsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data!.data.map((q) => (
+                {data!.data.map((q: any) => (
                   <TR key={q.id}>
                     <TD className="font-mono text-xs"><Link href={`/quotations/${q.id}`} className="text-brand-700">{q.number}</Link></TD>
-                    <TD className="text-xs">{q.rfqNumber ?? q.rfqId}</TD>
-                    <TD>{q.vendorName ?? q.vendorId}</TD>
+                    <TD className="text-xs">{q.rfq?.number ?? q.rfqNumber ?? q.rfqId}</TD>
+                    <TD>{q.vendor?.displayName ?? q.vendorName ?? q.vendorId}</TD>
                     <TD><StatusPill status={q.status} /></TD>
                     <TD className="text-right">{formatCurrency(Number(q.totalAmount))}</TD>
                     <TD className="text-xs text-ink-500">{fromNow(q.submittedAt)}</TD>
