@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Building2, ArrowLeft, CheckCircle2, XCircle, Ban, MapPin, Mail, Phone } from 'lucide-react';
@@ -12,8 +12,8 @@ import type { VendorStatus } from '@/lib/types';
 import { extractError } from '@/lib/api';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 
-export default function VendorDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function VendorDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   useRequireAuth(['ADMIN', 'OFFICER', 'MANAGER']);
   const toast = useToast();
   const qc = useQueryClient();
