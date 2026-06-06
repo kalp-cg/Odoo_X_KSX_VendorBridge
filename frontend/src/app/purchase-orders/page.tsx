@@ -62,18 +62,29 @@ export default function PurchaseOrdersPage() {
                 </TR>
               </THead>
               <TBody>
-                {data?.data?.map((p) => (
+                {data?.data?.map((p: any) => (
                   <TR key={p.id}>
                     <TD className="font-mono text-xs"><Link href={`/purchase-orders/${p.id}`} className="text-brand-700">{p.number}</Link></TD>
-                    <TD>{p.vendorName ?? p.vendorId}</TD>
+                    <TD>{p.vendor?.displayName ?? p.vendorName ?? p.vendorId}</TD>
                     <TD><StatusPill status={p.status} /></TD>
                     <TD className="text-right">{formatCurrency(Number(p.grandTotal))}</TD>
                     <TD className="text-xs text-ink-500">{fromNow(p.generatedAt)}</TD>
                     <TD>
                       <div className="flex items-center gap-1">
-                        <a href={pdfUrl('purchase-order', p.id)} target="_blank" rel="noreferrer" className="text-ink-500 hover:text-brand-600 p-1" title="PDF">
+                        <button onClick={async () => {
+                          try {
+                            const { api } = await import('@/lib/api');
+                            const res = await api.get(`/purchase-orders/${p.id}/pdf`, { responseType: 'blob' });
+                            const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${p.number}.pdf`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          } catch { /* ignore */ }
+                        }} className="text-ink-500 hover:text-brand-600 p-1" title="PDF">
                           <FileDown className="h-4 w-4" />
-                        </a>
+                        </button>
                         {p.status === 'GENERATED' && (
                           <Button size="sm" variant="ghost" leftIcon={<Send className="h-3.5 w-3.5" />} loading={markSent.isPending && markSent.variables === p.id} onClick={() => markSent.mutate(p.id)}>
                             Send

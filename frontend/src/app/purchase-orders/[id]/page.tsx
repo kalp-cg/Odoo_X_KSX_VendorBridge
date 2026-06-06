@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ArrowLeft, FileDown, Printer, Mail, CheckCircle2, Truck } from 'lucide-react';
@@ -12,8 +12,8 @@ import { extractError } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 
-export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function PurchaseOrderDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   useRequireAuth();
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
@@ -42,11 +42,22 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
   return (
     <AppShell
       title={p.number}
-      subtitle={`Vendor: ${p.vendorName}`}
+      subtitle={`Vendor: ${(p as any).vendor?.displayName ?? p.vendorName}`}
       actions={
         <div className="flex gap-2">
           <Link href="/purchase-orders" className="btn-secondary"><ArrowLeft className="h-4 w-4" />Back</Link>
-          <a href={pdfUrl('purchase-order', p.id)} target="_blank" rel="noreferrer" className="btn-secondary"><FileDown className="h-4 w-4" />PDF</a>
+          <button onClick={async () => {
+            try {
+              const { api } = await import('@/lib/api');
+              const res = await api.get(`/purchase-orders/${p.id}/pdf`, { responseType: 'blob' });
+              const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `${p.number}.pdf`;
+              a.click();
+              URL.revokeObjectURL(url);
+            } catch { /* ignore */ }
+          }} className="btn-secondary"><FileDown className="h-4 w-4" />PDF</button>
           <button onClick={() => window.print()} className="btn-secondary"><Printer className="h-4 w-4" />Print</button>
           {p.invoiceId && (
             <Link href={`/invoices/${p.invoiceId}`} className="btn-secondary"><Mail className="h-4 w-4" />Invoice</Link>
