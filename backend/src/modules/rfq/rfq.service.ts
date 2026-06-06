@@ -43,9 +43,8 @@ export class RfqService {
       throw businessRule('All invited vendors must be ACTIVE', { inactiveIds: inactive.map((v) => v.id) });
     }
 
-    const number = await this.numbering.next('RFQ');
-
     const rfq = await this.prisma.$transaction(async (tx) => {
+      const number = await this.numbering.next('RFQ', tx);
       const r = await tx.rfq.create({
         data: {
           number,
