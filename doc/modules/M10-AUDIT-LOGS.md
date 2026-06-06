@@ -1,6 +1,6 @@
 # M10 — Audit Logs
 
-> Implementation of the audit log subsystem. See [11-AUDIT-LOGS.md](../11-AUDIT-LOGS.md) for the system spec, immutability guarantees, and event catalog.
+> Implementation of the audit log subsystem. See [11-AUDIT-LOGS.md](../03-platform/11-AUDIT-LOGS.md) for the system spec, immutability guarantees, and event catalog.
 
 ## M10.1 Purpose
 
@@ -26,7 +26,7 @@
 
 ## M10.3 Entities
 
-- `AuditLog` (see [07-DATA-MODEL.md](../07-DATA-MODEL.md) §7.2).
+- `AuditLog` (see [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md) §7.2).
 
 ## M10.4 Endpoints
 
@@ -123,7 +123,7 @@ The `log` method reads this from `REQUEST` scope (NestJS) and attaches to the ro
 
 ## M10.7 Action catalog
 
-The full action catalog is in [11-AUDIT-LOGS.md](../11-AUDIT-LOGS.md) §11.3. The constant table is in `audit-logs/constants.ts`:
+The full action catalog is in [11-AUDIT-LOGS.md](../03-platform/11-AUDIT-LOGS.md) §11.3. The constant table is in `audit-logs/constants.ts`:
 
 ```ts
 export const AUDIT_ACTIONS = {
@@ -293,7 +293,7 @@ Streamed for large exports.
 
 ## M10.12 Audit events list
 
-The list is in [11-AUDIT-LOGS.md](../11-AUDIT-LOGS.md) §11.3. New actions must be:
+The list is in [11-AUDIT-LOGS.md](../03-platform/11-AUDIT-LOGS.md) §11.3. New actions must be:
 
 - Added to `AUDIT_ACTIONS` constant.
 - Documented in the catalog.

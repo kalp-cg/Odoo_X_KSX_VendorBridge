@@ -1,6 +1,6 @@
 # M01 — Authentication
 
-> Source of truth for everything auth-related. See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.8 (User lifecycle), [13-SECURITY.md](../13-SECURITY.md), and the user-related rules in [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md).
+> Source of truth for everything auth-related. See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.8 (User lifecycle), [13-SECURITY.md](../03-platform/13-SECURITY.md), and the user-related rules in [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md).
 
 ## M01.1 Purpose
 
@@ -102,7 +102,7 @@ auth/
 
 ## M01.6 State transitions
 
-User status transitions are described in [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.8. Auth module enforces:
+User status transitions are described in [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.8. Auth module enforces:
 
 - A user with `INACTIVE`, `SUSPENDED`, or `DEACTIVATED` cannot log in → 403 `AUTH_NOT_ACTIVE`.
 - After 5 consecutive failed logins: 15-minute lockout (tracked in a `FailedLoginAttempt` table or in-memory in v1, persisted in v1.1).
@@ -131,7 +131,7 @@ User status transitions are described in [09-WORKFLOWS.md](../09-WORKFLOWS.md) �
 
 - 32 bytes base64url, 1-hour TTL.
 - Stored as SHA-256 hash in `PasswordResetToken` table (similar to refresh).
-- In v1, the API returns the token in the response (development convenience). In v1.1, it's emailed (see [12-NOTIFICATIONS.md](../12-NOTIFICATIONS.md)).
+- In v1, the API returns the token in the response (development convenience). In v1.1, it's emailed (see [12-NOTIFICATIONS.md](../03-platform/12-NOTIFICATIONS.md)).
 
 ## M01.8 Password policy
 
@@ -151,7 +151,7 @@ User status transitions are described in [09-WORKFLOWS.md](../09-WORKFLOWS.md) �
 | `POST /auth/reset-password` | 10/hour/IP |
 | `POST /auth/refresh` | 30/minute/IP |
 
-Implemented via `@nestjs/throttler`. See [08-API-STANDARDS.md](../08-API-STANDARDS.md) §8.11.
+Implemented via `@nestjs/throttler`. See [08-API-STANDARDS.md](../02-architecture/08-API-STANDARDS.md) §8.11.
 
 ## M01.10 Validation
 

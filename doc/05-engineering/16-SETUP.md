@@ -181,4 +181,4 @@ Recommended extensions:
 | `JWT_PUBLIC_KEY malformed` | Ensure PEM has newlines; many secret managers strip them — base64-decode and reformat |
 | Cloudinary upload 401 | Check `CLOUDINARY_*` envs; verify the API secret is correct |
 | Next.js 401 on every request | Check `NEXT_PUBLIC_API_BASE_URL` matches the API port |
-| Migration triggers missing | See [11-AUDIT-LOGS.md](11-AUDIT-LOGS.md) — triggers are in a separate migration `audit_immutability` |
+| Migration triggers missing | See [11-AUDIT-LOGS.md](../03-platform/11-AUDIT-LOGS.md) — triggers are in a separate migration `audit_immutability` |

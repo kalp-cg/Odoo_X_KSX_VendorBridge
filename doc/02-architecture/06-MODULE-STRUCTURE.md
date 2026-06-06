@@ -23,7 +23,7 @@ vendorbridge/
 
 **Why a monorepo:** a single source of truth for types and Zod schemas (frontend and backend), atomic refactors, one CI pipeline, one deploy. Tooling: **pnpm workspaces** for speed and disk efficiency.
 
-If a monorepo is too heavy for the hackathon, a single repo with two top-level folders (`apps/api`, `apps/web`, `packages/shared`) imported via TypeScript path aliases is also acceptable. Document the decision in [20-ROADMAP.md](20-ROADMAP.md).
+If a monorepo is too heavy for the hackathon, a single repo with two top-level folders (`apps/api`, `apps/web`, `packages/shared`) imported via TypeScript path aliases is also acceptable. Document the decision in [20-ROADMAP.md](../06-planning/20-ROADMAP.md).
 
 ## 6.2 Backend module layout (NestJS)
 

@@ -1,6 +1,6 @@
 # M05 — Quotations
 
-> Source of truth for vendor quotations and the comparison screen. See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.4 and [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md) §10.2.
+> Source of truth for vendor quotations and the comparison screen. See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.4 and [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md) §10.2.
 
 ## M05.1 Purpose
 

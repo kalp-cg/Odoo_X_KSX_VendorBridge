@@ -1,6 +1,6 @@
 # M11 — Reports & Analytics
 
-> Source of truth for the Reports screen. See [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md) §10.9 and the dashboard data flow in [04-ARCHITECTURE.md](../04-ARCHITECTURE.md) §4.9.
+> Source of truth for the Reports screen. See [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md) §10.9 and the dashboard data flow in [04-ARCHITECTURE.md](../02-architecture/04-ARCHITECTURE.md) §4.9.
 
 ## M11.1 Purpose
 
@@ -36,7 +36,7 @@ Reports derive from:
 - `invoices`
 - `vendor_companies` (for vendor name, category, rating)
 
-No materialized views or analytics tables in v1. The service uses Prisma `groupBy`, `_count`, `_sum`, and `aggregate` for computations. For larger datasets, we add DB indexes (already in [07-DATA-MODEL.md](../07-DATA-MODEL.md)).
+No materialized views or analytics tables in v1. The service uses Prisma `groupBy`, `_count`, `_sum`, and `aggregate` for computations. For larger datasets, we add DB indexes (already in [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md)).
 
 ## M11.4 Endpoints
 
@@ -201,7 +201,7 @@ PDF generation runs server-side and is best-effort. CSV is always available.
 
 ## M11.12 Audit events
 
-The reports module does not emit audit events for read operations (per [11-AUDIT-LOGS.md](../11-AUDIT-LOGS.md) §11.7). The nightly `rating` job emits `VENDOR_RATING_UPDATED` per vendor.
+The reports module does not emit audit events for read operations (per [11-AUDIT-LOGS.md](../03-platform/11-AUDIT-LOGS.md) §11.7). The nightly `rating` job emits `VENDOR_RATING_UPDATED` per vendor.
 
 ## M11.13 Notifications
 

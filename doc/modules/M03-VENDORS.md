@@ -1,6 +1,6 @@
 # M03 — Vendors
 
-> Source of truth for vendor management. See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.2 (VendorCompany lifecycle) and [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md) §10.6.
+> Source of truth for vendor management. See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.2 (VendorCompany lifecycle) and [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md) §10.6.
 
 ## M03.1 Purpose
 
@@ -28,7 +28,7 @@
 
 ## M03.3 Entities
 
-- `VendorCompany` (see [07-DATA-MODEL.md](../07-DATA-MODEL.md) §7.2).
+- `VendorCompany` (see [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md) §7.2).
 - `User` (linked via `vendorCompanyId`).
 - `FileAsset` (polymorphic — owned by VENDOR_COMPANY).
 

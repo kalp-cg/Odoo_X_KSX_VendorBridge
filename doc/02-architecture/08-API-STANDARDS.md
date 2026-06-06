@@ -147,7 +147,7 @@ The `code` field in the error response is one of these strings, machine-readable
 - Refresh token: 7-day TTL, httpOnly + secure cookie, single-use rotation.
 - Password reset token: 1-hour TTL, single-use, returned in response in v1 (email integration is pluggable for v1.1).
 
-See [modules/M01-AUTH.md](modules/M01-AUTH.md) for the full auth flow.
+See [modules/M01-AUTH.md](../modules/M01-AUTH.md) for the full auth flow.
 
 ## 8.11 Rate limiting
 

@@ -1,6 +1,6 @@
 # M06 — Approvals
 
-> Source of truth for the approval workflow and SoD enforcement. See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.5 and [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md) §10.3.
+> Source of truth for the approval workflow and SoD enforcement. See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.5 and [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md) §10.3.
 
 ## M06.1 Purpose
 

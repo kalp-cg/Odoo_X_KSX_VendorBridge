@@ -1,6 +1,6 @@
 # M09 — Notifications
 
-> Implementation of the in-app notification system. See [12-NOTIFICATIONS.md](../12-NOTIFICATIONS.md) for the system design and contract.
+> Implementation of the in-app notification system. See [12-NOTIFICATIONS.md](../03-platform/12-NOTIFICATIONS.md) for the system design and contract.
 
 ## M09.1 Purpose
 
@@ -20,7 +20,7 @@
 
 ## M09.3 Entities
 
-- `Notification` (see [07-DATA-MODEL.md](../07-DATA-MODEL.md) §7.2).
+- `Notification` (see [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md) §7.2).
 
 ## M09.4 Endpoints
 

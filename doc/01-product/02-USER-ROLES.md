@@ -16,7 +16,7 @@ VendorBridge has **4 user roles**. Permissions are enforced **server-side** (bac
 **Distinguishing traits**
 - The only role that can activate or block a `VendorCompany`.
 - The only role that can change another user's role.
-- Even Admin **cannot modify audit logs** — see [11-AUDIT-LOGS.md](11-AUDIT-LOGS.md).
+- Even Admin **cannot modify audit logs** — see [11-AUDIT-LOGS.md](../03-platform/11-AUDIT-LOGS.md).
 
 ---
 
@@ -137,7 +137,7 @@ The following rules enforce SoD and are **enforced in the service layer**, not j
 - **Authentication**: JWT-based. Access token (short-lived) + refresh token (long-lived, httpOnly cookie).
 - **Authorization**: RBAC check at the controller level via a `@Roles()` decorator and a `RolesGuard`. Ownership check (vendor isolation) is enforced in the service layer via a `findOwnedBy()` helper — controllers do not directly query by id.
 - **Multi-factor**: out of scope for v1.
-- See [13-SECURITY.md](13-SECURITY.md) and [modules/M01-AUTH.md](modules/M01-AUTH.md) for details.
+- See [13-SECURITY.md](../03-platform/13-SECURITY.md) and [modules/M01-AUTH.md](../modules/M01-AUTH.md) for details.
 
 ## 2.6 Account states
 

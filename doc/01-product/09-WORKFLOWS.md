@@ -56,7 +56,7 @@ BLOCKED ──(admin unblock)──▶ ACTIVE
 - A vendor with `PENDING_VERIFICATION`, `INACTIVE`, or `BLOCKED` cannot submit quotations.
 - Deactivating a vendor does not affect their existing RFQs or quotations in flight.
 
-See [modules/M03-VENDORS.md](modules/M03-VENDORS.md).
+See [modules/M03-VENDORS.md](../modules/M03-VENDORS.md).
 
 ## 9.3 RFQ lifecycle
 

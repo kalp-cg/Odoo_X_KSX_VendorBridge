@@ -37,7 +37,7 @@ Three layers of defense:
 
 ## 11.2 Schema
 
-See [07-DATA-MODEL.md](07-DATA-MODEL.md) §7.2 AuditLog. Key fields:
+See [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md) §7.2 AuditLog. Key fields:
 
 - `id` (uuid)
 - `actorId` (FK → User; nullable for system events)
@@ -53,7 +53,7 @@ See [07-DATA-MODEL.md](07-DATA-MODEL.md) §7.2 AuditLog. Key fields:
 
 ## 11.3 Event catalog
 
-The full list of audited actions. Every critical action must produce **exactly one** audit log entry. See [modules/M10-AUDIT-LOGS.md](modules/M10-AUDIT-LOGS.md) for the implementation.
+The full list of audited actions. Every critical action must produce **exactly one** audit log entry. See [modules/M10-AUDIT-LOGS.md](../modules/M10-AUDIT-LOGS.md) for the implementation.
 
 ### Vendor events
 

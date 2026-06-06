@@ -1,6 +1,6 @@
 # M08 — Invoices
 
-> Source of truth for Invoices. See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.7 and [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md) §10.5.
+> Source of truth for Invoices. See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.7 and [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md) §10.5.
 
 ## M08.1 Purpose
 

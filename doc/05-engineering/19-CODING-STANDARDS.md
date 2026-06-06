@@ -156,7 +156,7 @@ if (!canTransition(rfq.status, 'PUBLISHED')) {
 
 - **No N+1 queries.** Use `include` / `select` to fetch related rows.
 - **Pagination on every list endpoint.** Default 20, max 100.
-- **Indexes on every filtered and joined column** (see [07-DATA-MODEL.md](07-DATA-MODEL.md)).
+- **Indexes on every filtered and joined column** (see [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md)).
 - **No `await` in loops for independent operations** — use `Promise.all`.
 
 ## 19.14 Dependency policy

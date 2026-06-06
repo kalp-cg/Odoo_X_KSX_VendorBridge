@@ -138,7 +138,7 @@ The `/api/v1/health` endpoint returns:
 
 ## 17.7 Security hardening (production)
 
-- TLS enforced (HSTS, see [13-SECURITY.md](13-SECURITY.md)).
+- TLS enforced (HSTS, see [13-SECURITY.md](../03-platform/13-SECURITY.md)).
 - DB connection over TLS.
 - Secrets in the platform's secret manager (no `.env` files on disk).
 - Rate limiting enabled with conservative defaults.

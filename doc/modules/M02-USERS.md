@@ -1,6 +1,6 @@
 # M02 — Users & Roles
 
-> Source of truth for user management and role assignment. See [02-USER-ROLES.md](../02-USER-ROLES.md) for the canonical role definitions and permissions matrix.
+> Source of truth for user management and role assignment. See [02-USER-ROLES.md](../01-product/02-USER-ROLES.md) for the canonical role definitions and permissions matrix.
 
 ## M02.1 Purpose
 
@@ -24,7 +24,7 @@
 
 ## M02.3 Entities
 
-- `User` (see [07-DATA-MODEL.md](../07-DATA-MODEL.md) §7.2).
+- `User` (see [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md) §7.2).
 - `Role`, `UserRole` (M:N — but in v1, one role per user).
 - `VendorCompany` (read-only reference).
 
@@ -67,7 +67,7 @@ users/
 
 ## M02.6 Workflow
 
-See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.8. Key invariants:
+See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.8. Key invariants:
 
 - A user is created in `INACTIVE` state.
 - A user cannot log in until `ACTIVE`.

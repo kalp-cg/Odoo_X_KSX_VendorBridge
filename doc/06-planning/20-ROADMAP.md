@@ -36,7 +36,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - Rate limiting on auth endpoints.
 - Lint, typecheck, basic unit tests all pass.
 
-**Module specs involved**: [M01-AUTH](modules/M01-AUTH.md), [M02-USERS](modules/M02-USERS.md).
+**Module specs involved**: [M01-AUTH](../modules/M01-AUTH.md), [M02-USERS](../modules/M02-USERS.md).
 
 ---
 
@@ -60,7 +60,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - Search and filter vendors works (server-side, paginated).
 - Vendor can upload GST/PAN docs.
 
-**Module specs involved**: [M03-VENDORS](modules/M03-VENDORS.md), [M12-FILE-UPLOADS](modules/M12-FILE-UPLOADS.md).
+**Module specs involved**: [M03-VENDORS](../modules/M03-VENDORS.md), [M12-FILE-UPLOADS](../modules/M12-FILE-UPLOADS.md).
 
 ---
 
@@ -85,7 +85,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - Officer can close or cancel; auto-reject of quotations (placeholder for Phase 3).
 - RFQ list is filterable by status, vendor, date.
 
-**Module specs involved**: [M04-RFQ](modules/M04-RFQ.md), [M09-NOTIFICATIONS](modules/M09-NOTIFICATIONS.md), [M10-AUDIT-LOGS](modules/M10-AUDIT-LOGS.md).
+**Module specs involved**: [M04-RFQ](../modules/M04-RFQ.md), [M09-NOTIFICATIONS](../modules/M09-NOTIFICATIONS.md), [M10-AUDIT-LOGS](../modules/M10-AUDIT-LOGS.md).
 
 ---
 
@@ -109,7 +109,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - Officer shortlists one; a pending Approval is created; manager is notified.
 - A second shortlist supersedes the first; old shortlist is auto-rejected.
 
-**Module specs involved**: [M05-QUOTATIONS](modules/M05-QUOTATIONS.md), [M06-APPROVALS](modules/M06-APPROVALS.md).
+**Module specs involved**: [M05-QUOTATIONS](../modules/M05-QUOTATIONS.md), [M06-APPROVALS](../modules/M06-APPROVALS.md).
 
 ---
 
@@ -131,7 +131,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - The user who shortlisted cannot be the approver (SoD enforced).
 - Manager who is not the shortlister can approve.
 
-**Module specs involved**: [M06-APPROVALS](modules/M06-APPROVALS.md), [M07-PURCHASE-ORDERS](modules/M07-PURCHASE-ORDERS.md), [M08-INVOICES](modules/M08-INVOICES.md).
+**Module specs involved**: [M06-APPROVALS](../modules/M06-APPROVALS.md), [M07-PURCHASE-ORDERS](../modules/M07-PURCHASE-ORDERS.md), [M08-INVOICES](../modules/M08-INVOICES.md).
 
 ---
 
@@ -156,7 +156,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - Email send logs (or actually sends) a message with a PDF attachment.
 - Vendor can only see their own PO/Invoice.
 
-**Module specs involved**: [M07-PURCHASE-ORDERS](modules/M07-PURCHASE-ORDERS.md), [M08-INVOICES](modules/M08-INVOICES.md), [M12-FILE-UPLOADS](modules/M12-FILE-UPLOADS.md).
+**Module specs involved**: [M07-PURCHASE-ORDERS](../modules/M07-PURCHASE-ORDERS.md), [M08-INVOICES](../modules/M08-INVOICES.md), [M12-FILE-UPLOADS](../modules/M12-FILE-UPLOADS.md).
 
 ---
 
@@ -177,7 +177,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - Audit log shows every critical event with the actor and metadata.
 - CSV export contains all matching entries.
 
-**Module specs involved**: [M09-NOTIFICATIONS](modules/M09-NOTIFICATIONS.md), [M10-AUDIT-LOGS](modules/M10-AUDIT-LOGS.md).
+**Module specs involved**: [M09-NOTIFICATIONS](../modules/M09-NOTIFICATIONS.md), [M10-AUDIT-LOGS](../modules/M10-AUDIT-LOGS.md).
 
 ---
 
@@ -203,7 +203,7 @@ VendorBridge is delivered in **phases**. Each phase is independently demoable an
 - All screens work on a 375px-wide viewport.
 - Lighthouse score > 90 for accessibility on the main pages.
 
-**Module specs involved**: [M11-REPORTS](modules/M11-REPORTS.md).
+**Module specs involved**: [M11-REPORTS](../modules/M11-REPORTS.md).
 
 ---
 

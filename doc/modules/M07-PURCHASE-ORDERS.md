@@ -1,6 +1,6 @@
 # M07 — Purchase Orders
 
-> Source of truth for Purchase Orders. See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.6 and [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md) §10.4.
+> Source of truth for Purchase Orders. See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.6 and [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md) §10.4.
 
 ## M07.1 Purpose
 

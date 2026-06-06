@@ -28,7 +28,7 @@ The vendor recipient is the **primary contact** of the VendorCompany in v1 (the 
 
 ## 12.3 Schema
 
-See [07-DATA-MODEL.md](07-DATA-MODEL.md) §7.2 Notification.
+See [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md) §7.2 Notification.
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -129,6 +129,6 @@ For the hackathon, preferences are out of scope.
 ## 12.10 What is NOT in notifications
 
 - Marketing emails.
-- Password reset emails are handled separately by the auth flow (see [modules/M01-AUTH.md](modules/M01-AUTH.md)).
+- Password reset emails are handled separately by the auth flow (see [modules/M01-AUTH.md](../modules/M01-AUTH.md)).
 - Real-time push (WebSockets) is not in v1.
 - SMS is not in v1.

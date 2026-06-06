@@ -1,21 +1,21 @@
 # 03 — Screens & UX
 
-This document maps the 10 screens from the problem statement to the modules, permissions, and key UX flows. UI references live in [`UI_Wireframes/`](../UI_Wireframes/).
+This document maps the 10 screens from the problem statement to the modules, permissions, and key UX flows. UI references live in [`UI_Wireframes/`](../../UI_Wireframes/).
 
 ## 3.1 Screen inventory
 
 | # | Screen | Primary user | Module | Wireframe |
 |---|--------|--------------|--------|-----------|
-| 1 | Login / Signup | All | Auth | [Login-SignUp.png](../UI_Wireframes/Login-SignUp.png) |
-| 2 | Dashboard | All | Dashboard (cross-module) | [mian_landing_page.png](../UI_Wireframes/mian_landing_page.png) |
-| 3 | Vendor Management | Admin, Officer, Manager | Vendors | [vendor_page.png](../UI_Wireframes/vendor_page.png) |
-| 4 | RFQ Creation | Officer, Admin | RFQ | [rfq_page.png](../UI_Wireframes/rfq_page.png) |
-| 5 | Vendor Quotation | Vendor | Quotations | [quotation_image.png](../UI_Wireframes/quotation_image.png) |
-| 6 | Quotation Comparison | Officer, Manager | Quotations | [comparision_page.png](../UI_Wireframes/comparision_page.png) |
-| 7 | Approval Workflow | Manager, Officer | Approvals | [approval_worfow_page.png](../UI_Wireframes/approval_worfow_page.png) |
-| 8 | PO & Invoice | Officer, Manager, Admin | Purchase Orders + Invoices | [P&O_page.png](../UI_Wireframes/P&O_page.png) |
-| 9 | Activity Logs & Notifications | All (own only for vendors) | Audit + Notifications | [activity_page.png](../UI_Wireframes/activity_page.png) |
-| 10 | Reports & Analytics | Admin, Officer, Manager | Reports | [reports_page.png](../UI_Wireframes/reports_page.png) |
+| 1 | Login / Signup | All | Auth | [Login-SignUp.png](../../UI_Wireframes/Login-SignUp.png) |
+| 2 | Dashboard | All | Dashboard (cross-module) | [mian_landing_page.png](../../UI_Wireframes/mian_landing_page.png) |
+| 3 | Vendor Management | Admin, Officer, Manager | Vendors | [vendor_page.png](../../UI_Wireframes/vendor_page.png) |
+| 4 | RFQ Creation | Officer, Admin | RFQ | [rfq_page.png](../../UI_Wireframes/rfq_page.png) |
+| 5 | Vendor Quotation | Vendor | Quotations | [quotation_image.png](../../UI_Wireframes/quotation_image.png) |
+| 6 | Quotation Comparison | Officer, Manager | Quotations | [comparision_page.png](../../UI_Wireframes/comparision_page.png) |
+| 7 | Approval Workflow | Manager, Officer | Approvals | [approval_worfow_page.png](../../UI_Wireframes/approval_worfow_page.png) |
+| 8 | PO & Invoice | Officer, Manager, Admin | Purchase Orders + Invoices | [P&O_page.png](../../UI_Wireframes/P&O_page.png) |
+| 9 | Activity Logs & Notifications | All (own only for vendors) | Audit + Notifications | [activity_page.png](../../UI_Wireframes/activity_page.png) |
+| 10 | Reports & Analytics | Admin, Officer, Manager | Reports | [reports_page.png](../../UI_Wireframes/reports_page.png) |
 
 ---
 
@@ -30,7 +30,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - Form validation with React Hook Form + Zod.
 - Role-based redirect after login (vendor → vendor portal, others → dashboard).
 
-**Module spec:** [modules/M01-AUTH.md](modules/M01-AUTH.md)
+**Module spec:** [modules/M01-AUTH.md](../modules/M01-AUTH.md)
 
 ---
 
@@ -67,7 +67,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - **Vendor documents** (Cloudinary): GST certificate, PAN, agreement — viewable as links.
 - For vendor users: read-only view of **own** vendor profile, with limited editable fields (contact phone, address).
 
-**Module spec:** [modules/M03-VENDORS.md](modules/M03-VENDORS.md)
+**Module spec:** [modules/M03-VENDORS.md](../modules/M03-VENDORS.md)
 
 ---
 
@@ -84,7 +84,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - **Save as Draft** or **Publish** action.
 - After publish: vendors are notified in-app.
 
-**Module spec:** [modules/M04-RFQ.md](modules/M04-RFQ.md)
+**Module spec:** [modules/M04-RFQ.md](../modules/M04-RFQ.md)
 
 ---
 
@@ -102,7 +102,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - **Edit** action: only enabled when `rfq.deadline > now`.
 - After deadline: form is read-only with a "deadline passed" banner.
 
-**Module spec:** [modules/M05-QUOTATIONS.md](modules/M05-QUOTATIONS.md)
+**Module spec:** [modules/M05-QUOTATIONS.md](../modules/M05-QUOTATIONS.md)
 
 ---
 
@@ -117,7 +117,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - **Shortlist** action: officer marks one quotation as `SHORTLISTED` and triggers an approval.
 - If already shortlisted: shows "Recommended for approval" with link to the approval record.
 
-**Module spec:** [modules/M05-QUOTATIONS.md](modules/M05-QUOTATIONS.md), [modules/M06-APPROVALS.md](modules/M06-APPROVALS.md)
+**Module spec:** [modules/M05-QUOTATIONS.md](../modules/M05-QUOTATIONS.md), [modules/M06-APPROVALS.md](../modules/M06-APPROVALS.md)
 
 ---
 
@@ -134,7 +134,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - **Workflow state transitions** clearly shown (badge + history).
 - Officers see read-only state of their submitted approvals.
 
-**Module spec:** [modules/M06-APPROVALS.md](modules/M06-APPROVALS.md)
+**Module spec:** [modules/M06-APPROVALS.md](../modules/M06-APPROVALS.md)
 
 ---
 
@@ -151,10 +151,10 @@ This document maps the 10 screens from the problem statement to the modules, per
 - Invoice detail: PO reference, line items, **single tax rate** (%), tax amount, grand total, status.
 - **Download as PDF** action (server-rendered).
 - **Print** action (browser print dialog).
-- **Send via email** action (in v1: persists the email event; in v1.1: actually sends — see [modules/M08-INVOICES.md](modules/M08-INVOICES.md)).
+- **Send via email** action (in v1: persists the email event; in v1.1: actually sends — see [modules/M08-INVOICES.md](../modules/M08-INVOICES.md)).
 - Status badges: `Pending`, `Paid`, `Overdue`.
 
-**Module spec:** [modules/M07-PURCHASE-ORDERS.md](modules/M07-PURCHASE-ORDERS.md), [modules/M08-INVOICES.md](modules/M08-INVOICES.md)
+**Module spec:** [modules/M07-PURCHASE-ORDERS.md](../modules/M07-PURCHASE-ORDERS.md), [modules/M08-INVOICES.md](../modules/M08-INVOICES.md)
 
 ---
 
@@ -168,7 +168,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - **Audit logs table** (Admin, Officer, Manager): full immutable log with filters by entity type, action, user, date range.
 - **Mark as read** action on notifications.
 
-**Module spec:** [modules/M09-NOTIFICATIONS.md](modules/M09-NOTIFICATIONS.md), [modules/M10-AUDIT-LOGS.md](modules/M10-AUDIT-LOGS.md)
+**Module spec:** [modules/M09-NOTIFICATIONS.md](../modules/M09-NOTIFICATIONS.md), [modules/M10-AUDIT-LOGS.md](../modules/M10-AUDIT-LOGS.md)
 
 ---
 
@@ -185,7 +185,7 @@ This document maps the 10 screens from the problem statement to the modules, per
 - Date range picker for all reports.
 - For vendors: scoped to their own data only.
 
-**Module spec:** [modules/M11-REPORTS.md](modules/M11-REPORTS.md)
+**Module spec:** [modules/M11-REPORTS.md](../modules/M11-REPORTS.md)
 
 ---
 

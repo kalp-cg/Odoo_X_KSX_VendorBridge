@@ -1,6 +1,6 @@
 # M04 — RFQ (Request For Quotation)
 
-> Source of truth for RFQ creation and lifecycle. See [09-WORKFLOWS.md](../09-WORKFLOWS.md) §9.3 and [10-BUSINESS-RULES.md](../10-BUSINESS-RULES.md) §10.1.
+> Source of truth for RFQ creation and lifecycle. See [09-WORKFLOWS.md](../01-product/09-WORKFLOWS.md) §9.3 and [10-BUSINESS-RULES.md](../01-product/10-BUSINESS-RULES.md) §10.1.
 
 ## M04.1 Purpose
 

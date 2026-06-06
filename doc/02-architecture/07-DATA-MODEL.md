@@ -253,7 +253,7 @@ Indexes: `(userId, readAt)`, `createdAt`.
 
 ### AuditLog
 
-Immutable. See [11-AUDIT-LOGS.md](11-AUDIT-LOGS.md).
+Immutable. See [11-AUDIT-LOGS.md](../03-platform/11-AUDIT-LOGS.md).
 
 | Field | Type | Notes |
 |-------|------|-------|

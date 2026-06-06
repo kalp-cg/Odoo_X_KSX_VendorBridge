@@ -27,7 +27,7 @@
 
 ## M12.3 Entities
 
-- `FileAsset` (polymorphic, see [07-DATA-MODEL.md](../07-DATA-MODEL.md) §7.2).
+- `FileAsset` (polymorphic, see [07-DATA-MODEL.md](../02-architecture/07-DATA-MODEL.md) §7.2).
 
 ## M12.4 Upload endpoints
 

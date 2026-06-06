@@ -116,7 +116,7 @@ Modules **must not depend on** another module's controller or repository.
 | Audit | `AuditService.log(event)` called explicitly from services (no interceptor magic) |
 | Notifications | `NotificationService.emit(event)` called explicitly from services |
 | Logging | `nestjs-pino` structured JSON logs, request-scoped child logger |
-| Config | `@nestjs/config` with Zod-validated env schema (see [16-SETUP.md](16-SETUP.md)) |
+| Config | `@nestjs/config` with Zod-validated env schema (see [16-SETUP.md](../05-engineering/16-SETUP.md)) |
 
 ## 4.7 Frontend architecture
 

@@ -12,7 +12,7 @@ The frontend is a **Next.js 15** application using the App Router. It serves thr
 
 ## 14.2 Tech stack (recap)
 
-See [05-TECH-STACK.md](05-TECH-STACK.md) §5.1.
+See [05-TECH-STACK.md](../02-architecture/05-TECH-STACK.md) §5.1.
 
 ## 14.3 Routing strategy
 
