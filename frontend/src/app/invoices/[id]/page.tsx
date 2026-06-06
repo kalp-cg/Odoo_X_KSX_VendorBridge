@@ -1,6 +1,6 @@
 'use client';
 
-import { use } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ArrowLeft, FileDown, Printer, Mail, AlertTriangle } from 'lucide-react';
@@ -10,8 +10,8 @@ import { resources, pdfUrl } from '@/lib/resources';
 import { formatCurrency, formatDate, isOverdue } from '@/lib/utils';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 
-export default function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function InvoiceDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   useRequireAuth();
 
   const { data, isLoading } = useQuery({
@@ -26,11 +26,22 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
   return (
     <AppShell
       title={i.number}
-      subtitle={`Vendor: ${i.vendorName}`}
+      subtitle={`Vendor: ${(i as any).vendor?.displayName ?? i.vendorName}`}
       actions={
         <div className="flex gap-2">
           <Link href="/invoices" className="btn-secondary"><ArrowLeft className="h-4 w-4" />Back</Link>
-          <a href={pdfUrl('invoice', i.id)} target="_blank" rel="noreferrer" className="btn-secondary"><FileDown className="h-4 w-4" />PDF</a>
+          <button onClick={async () => {
+            try {
+              const { api } = await import('@/lib/api');
+              const res = await api.get(`/invoices/${i.id}/pdf`, { responseType: 'blob' });
+              const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `${i.number}.pdf`;
+              a.click();
+              URL.revokeObjectURL(url);
+            } catch { /* ignore */ }
+          }} className="btn-secondary"><FileDown className="h-4 w-4" />PDF</button>
           <button onClick={() => window.print()} className="btn-secondary"><Printer className="h-4 w-4" />Print</button>
           <Link href={`/purchase-orders/${i.purchaseOrderId}`} className="btn-secondary">View PO</Link>
         </div>
@@ -54,12 +65,12 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="label mb-1">Billed To</h4>
-            <div className="text-sm text-ink-800">{i.vendorName}</div>
+            <div className="text-sm text-ink-800">{(i as any).vendor?.displayName ?? i.vendorName}</div>
             <div className="text-xs text-ink-500">Vendor ID: {i.vendorId}</div>
           </div>
           <div>
             <h4 className="label mb-1">Reference</h4>
-            <div className="text-sm text-ink-800">PO: <Link href={`/purchase-orders/${i.purchaseOrderId}`} className="text-brand-700">{i.purchaseOrderNumber ?? i.purchaseOrderId}</Link></div>
+            <div className="text-sm text-ink-800">PO: <Link href={`/purchase-orders/${i.purchaseOrderId}`} className="text-brand-700">{(i as any).purchaseOrder?.number ?? i.purchaseOrderNumber ?? i.purchaseOrderId}</Link></div>
             <div className="text-xs text-ink-500">Approval: {i.approvalId}</div>
           </div>
         </div>

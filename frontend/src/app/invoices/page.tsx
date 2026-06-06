@@ -65,11 +65,11 @@ export default function InvoicesPage() {
                 </TR>
               </THead>
               <TBody>
-                {data?.data?.map((i) => (
+                {data?.data?.map((i: any) => (
                   <TR key={i.id}>
                     <TD className="font-mono text-xs"><Link href={`/invoices/${i.id}`} className="text-brand-700">{i.number}</Link></TD>
-                    <TD className="font-mono text-xs">{i.purchaseOrderNumber ?? i.purchaseOrderId}</TD>
-                    <TD>{i.vendorName ?? i.vendorId}</TD>
+                    <TD className="font-mono text-xs">{i.purchaseOrder?.number ?? i.purchaseOrderNumber ?? i.purchaseOrderId}</TD>
+                    <TD>{i.vendor?.displayName ?? i.vendorName ?? i.vendorId}</TD>
                     <TD>
                       <div className="flex items-center gap-1">
                         <StatusPill status={i.status} />
@@ -80,7 +80,20 @@ export default function InvoicesPage() {
                     <TD className="text-right">{formatCurrency(Number(i.grandTotal))}</TD>
                     <TD>
                       <div className="flex items-center gap-1">
-                        <a href={pdfUrl('invoice', i.id)} target="_blank" rel="noreferrer" className="text-ink-500 hover:text-brand-600 p-1" title="PDF"><FileDown className="h-4 w-4" /></a>
+                        <button onClick={async () => {
+                          try {
+                            const { api } = await import('@/lib/api');
+                            const res = await api.get(`/invoices/${i.id}/pdf`, { responseType: 'blob' });
+                            const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${i.number}.pdf`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          } catch { /* ignore */ }
+                        }} className="text-ink-500 hover:text-brand-600 p-1" title="PDF">
+                          <FileDown className="h-4 w-4" />
+                        </button>
                         <button onClick={() => emailIt.mutate(i.id)} className="text-ink-500 hover:text-brand-600 p-1" title="Email"><Mail className="h-4 w-4" /></button>
                         {i.status !== 'PAID' && (
                           <Button size="sm" variant="ghost" leftIcon={<CheckCircle2 className="h-3.5 w-3.5" />} onClick={() => setPayFor(i.id)}>Pay</Button>
