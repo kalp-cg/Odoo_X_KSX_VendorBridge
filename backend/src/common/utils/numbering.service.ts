@@ -15,6 +15,9 @@ const PREFIX_TO_ID: Record<DocPrefix, string> = {
  * Sequence is persisted in `sequence_trackers` and is safe across
  * concurrent calls via an atomic conditional update.
  */
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
 export class NumberingService {
   constructor(private readonly prisma: PrismaService) {}
 
